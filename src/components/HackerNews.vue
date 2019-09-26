@@ -2,10 +2,10 @@
   <div class="container">
     <div class="card">
       <div class="heading">
-        <h4 class="title">Netflix Ratings</h4>
+        <h4 class="title">{{name}}</h4>
       </div>
       <div class="search">
-        <input type="text" class="form-control" placeholder="Search by title" />
+        <input v-model="title" type="text" class="form-control" placeholder="Search by title" />
       </div>
       <div class="content">
         <div>
@@ -16,9 +16,11 @@
             <p></p>
           </div>
           <ul class="list">
-            <li>
-              <a href></a>
-              <span>By:</span>
+            <li v-for="(item, index) in stories" :key="index">
+              <template v-if="item.title">
+                <a :href="item.url">{{item.title}}</a>
+                <span>By:{{item.author}}</span>
+              </template>
             </li>
           </ul>
         </div>
@@ -28,8 +30,49 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-  name: "HackerNews"
+  name: "HackerNews",
+  data: function() {
+    return {
+      title: "",
+      name: "Netflix Offer",
+      stories: []
+    };
+  },
+  created() {
+    console.log("Hello");
+    this.getData();
+  },
+  computed: {
+    newName() {
+      return this.name.toLowerCase();
+    }
+  },
+  watch: {
+    title(value) {
+      this.getData();
+    }
+  },
+  methods: {
+    async getData() {
+      try {
+        const response = await axios.get(
+          "https://hn.algolia.com/api/v1/search",
+          {
+            params: {
+              query: this.title
+            }
+          }
+        );
+        this.stories = response.data.hits;
+        console.log(this.stories);
+      } catch (error) {
+        // Handle Error
+      }
+    }
+  }
 };
 </script>
 
