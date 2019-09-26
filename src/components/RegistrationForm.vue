@@ -5,23 +5,23 @@
         <h4 class="title">Register to create a new account</h4>
       </div>
       <div class="content">
-        <form>
+        <form @submit.prevent="handleSubmit">
           <div class="form-group">
             <label class="label" for="name">Name</label>
-            <input type="text" class="form-control" id="name" placeholder="name" required />
+            <input type="text" class="form-control" id="name" placeholder="name" v-model="name" />
           </div>
           <div class="form-group">
             <label class="label" for="email">Email address</label>
-            <input type="email" class="form-control" id="email" placeholder="email" required />
+            <input type="email" class="form-control" id="email" placeholder="email" v-model="email" />
           </div>
           <div class="form-group">
             <label class="label" for="password">Password</label>
             <input
               type="password"
+              v-model="password"
               class="form-control"
               id="password"
               placeholder="password"
-              required
             />
           </div>
 
@@ -33,8 +33,32 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-  name: "RegistrationForm"
+  name: "RegistrationForm",
+  data: function() {
+    return {
+      name: "",
+      email: "",
+      password: ""
+    };
+  },
+  methods: {
+    async handleSubmit() {
+      console.log("form Submitted");
+      try {
+        const response = await axios.post("some-url", {
+          name: this.name,
+          email: this.email,
+          password: this.password
+        });
+        console.log(response);
+      } catch (err) {
+        // Handle Error
+      }
+    }
+  }
 };
 </script>
 
